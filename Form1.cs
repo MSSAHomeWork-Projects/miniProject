@@ -43,6 +43,13 @@ namespace MiniProject
                 return;
             }
             FileScanner scanner = new FileScanner(selectedFolderPath);
+            dataGridView1.Rows.Clear();
+            var deletedFiles = scanner.DeleteOldInstallers();
+            foreach (var deleted in  deletedFiles)
+            {
+                int row = dataGridView1.Rows.Add(deleted.fileName, deleted.category, deleted.destination);
+                dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
+            }
             scanner.FilterByType();
             Console.WriteLine("File groups contain archives?" + scanner.FileGroups.ContainsKey("Archives"));
 
@@ -51,7 +58,6 @@ namespace MiniProject
 
             FileMover mover = new FileMover();
 
-            dataGridView1.Rows.Clear();
             foreach (var category in scanner.FileGroups)
             {
                 string destination = mover.GetCategoryDestination(category.Key);

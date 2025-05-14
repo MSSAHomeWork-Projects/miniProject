@@ -43,9 +43,9 @@
             // 
             // dataGridView1
             // 
-            dataGridView1.BackgroundColor = Color.FromArgb(177, 187, 194);
+            dataGridView1.BackgroundColor = Color.FromArgb(216, 220, 223);
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(1, 38, 34);
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(30, 127, 176);
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = Color.White;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
@@ -71,7 +71,7 @@
             // 
             // btnSelectFolder
             // 
-            btnSelectFolder.BackColor = Color.FromArgb(118, 144, 147);
+            btnSelectFolder.BackColor = Color.FromArgb(152, 212, 34);
             btnSelectFolder.FlatStyle = FlatStyle.Flat;
             btnSelectFolder.ForeColor = Color.Black;
             btnSelectFolder.Location = new Point(41, 71);
@@ -85,7 +85,7 @@
             // lblSourceTitle
             // 
             lblSourceTitle.AutoSize = true;
-            lblSourceTitle.ForeColor = Color.White;
+            lblSourceTitle.ForeColor = Color.Black;
             lblSourceTitle.Location = new Point(41, 30);
             lblSourceTitle.Name = "lblSourceTitle";
             lblSourceTitle.Size = new Size(46, 15);
@@ -94,7 +94,7 @@
             // 
             // BtnSortFiles
             // 
-            BtnSortFiles.BackColor = Color.FromArgb(235, 184, 131);
+            BtnSortFiles.BackColor = Color.FromArgb(152, 212, 34);
             BtnSortFiles.FlatStyle = FlatStyle.Flat;
             BtnSortFiles.ForeColor = Color.Black;
             BtnSortFiles.Location = new Point(150, 71);
@@ -108,7 +108,7 @@
             // lblSelectedPath
             // 
             lblSelectedPath.AutoSize = true;
-            lblSelectedPath.ForeColor = Color.White;
+            lblSelectedPath.ForeColor = Color.Black;
             lblSelectedPath.Location = new Point(150, 30);
             lblSelectedPath.Name = "lblSelectedPath";
             lblSelectedPath.Size = new Size(36, 15);
@@ -137,7 +137,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(0, 59, 54);
+            BackColor = Color.FromArgb(137, 197, 245);
             ClientSize = new Size(884, 450);
             Controls.Add(progressBar1);
             Controls.Add(chkExtractZips);
