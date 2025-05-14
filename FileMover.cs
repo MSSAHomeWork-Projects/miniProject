@@ -19,11 +19,11 @@ namespace MiniProject
             ZipExtractToDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
         }
 
-        public void ExtractZipFiles(string zipFilePath)
+        public string? ExtractZipFiles(string zipFilePath)
         {
             if (!File.Exists(zipFilePath))
             {
-                return;
+                return null;
             }
 
             try
@@ -36,10 +36,12 @@ namespace MiniProject
                 FilesMoved++;
 
                 FileSystem.DeleteFile(zipFilePath);
+                return extractFolder;
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Failed to extract {zipFilePath}: {e.Message}");
+                return null;
             }
         }
 

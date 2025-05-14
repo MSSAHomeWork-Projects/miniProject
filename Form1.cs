@@ -51,7 +51,6 @@ namespace MiniProject
                 dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
             }
             scanner.FilterByType();
-            Console.WriteLine("File groups contain archives?" + scanner.FileGroups.ContainsKey("Archives"));
 
             int totalFiles = scanner.FileGroups.Sum(group => group.Value.Count);
             int processedFiles = 0;
@@ -67,7 +66,14 @@ namespace MiniProject
                     {
                         foreach (string zipPath in category.Value)
                         {
-                            mover.ExtractZipFiles(zipPath);
+                            string zipFileName = Path.GetFileName(zipPath);
+                            string? extractedPath = mover.ExtractZipFiles(zipPath);
+
+                            if (extractedPath != null)
+                            {
+                                int row = dataGridView1.Rows.Add(zipFileName, "Download", $"Extracted to {extractedPath}");
+                                dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.OrangeRed;
+                            }
                         }
                     }
                     continue;
