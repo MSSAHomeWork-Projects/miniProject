@@ -38,6 +38,7 @@
             lblSelectedPath = new Label();
             chkExtractZips = new CheckBox();
             progressBar1 = new ProgressBar();
+            BtnDeleteDuplicates = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -76,7 +77,7 @@
             btnSelectFolder.ForeColor = Color.Black;
             btnSelectFolder.Location = new Point(41, 71);
             btnSelectFolder.Name = "btnSelectFolder";
-            btnSelectFolder.Size = new Size(86, 23);
+            btnSelectFolder.Size = new Size(115, 23);
             btnSelectFolder.TabIndex = 1;
             btnSelectFolder.Text = "Select Folder";
             btnSelectFolder.UseVisualStyleBackColor = false;
@@ -97,9 +98,9 @@
             BtnSortFiles.BackColor = Color.FromArgb(152, 212, 34);
             BtnSortFiles.FlatStyle = FlatStyle.Flat;
             BtnSortFiles.ForeColor = Color.Black;
-            BtnSortFiles.Location = new Point(150, 71);
+            BtnSortFiles.Location = new Point(162, 71);
             BtnSortFiles.Name = "BtnSortFiles";
-            BtnSortFiles.Size = new Size(75, 23);
+            BtnSortFiles.Size = new Size(115, 23);
             BtnSortFiles.TabIndex = 3;
             BtnSortFiles.Text = "Sort Files";
             BtnSortFiles.UseVisualStyleBackColor = false;
@@ -118,7 +119,7 @@
             // chkExtractZips
             // 
             chkExtractZips.AutoSize = true;
-            chkExtractZips.Location = new Point(260, 75);
+            chkExtractZips.Location = new Point(414, 75);
             chkExtractZips.Name = "chkExtractZips";
             chkExtractZips.Size = new Size(107, 19);
             chkExtractZips.TabIndex = 4;
@@ -128,10 +129,22 @@
             // 
             // progressBar1
             // 
-            progressBar1.Location = new Point(439, 71);
+            progressBar1.Location = new Point(574, 71);
             progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(410, 23);
+            progressBar1.Size = new Size(275, 23);
             progressBar1.TabIndex = 5;
+            // 
+            // BtnDeleteDuplicates
+            // 
+            BtnDeleteDuplicates.BackColor = Color.FromArgb(152, 212, 34);
+            BtnDeleteDuplicates.FlatStyle = FlatStyle.Flat;
+            BtnDeleteDuplicates.Location = new Point(283, 71);
+            BtnDeleteDuplicates.Name = "BtnDeleteDuplicates";
+            BtnDeleteDuplicates.Size = new Size(115, 23);
+            BtnDeleteDuplicates.TabIndex = 6;
+            BtnDeleteDuplicates.Text = "Delete Duplicates";
+            BtnDeleteDuplicates.UseVisualStyleBackColor = false;
+            BtnDeleteDuplicates.Click += BtnDeleteDuplicates_Click;
             // 
             // Form1
             // 
@@ -139,6 +152,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(137, 197, 245);
             ClientSize = new Size(884, 450);
+            Controls.Add(BtnDeleteDuplicates);
             Controls.Add(progressBar1);
             Controls.Add(chkExtractZips);
             Controls.Add(lblSelectedPath);
@@ -147,7 +161,7 @@
             Controls.Add(btnSelectFolder);
             Controls.Add(dataGridView1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "File Sorter";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
@@ -164,5 +178,7 @@
         private Label lblSelectedPath;
         private CheckBox chkExtractZips;
         private ProgressBar progressBar1;
+        private TabPage tabPage1;
+        private Button BtnDeleteDuplicates;
     }
 }

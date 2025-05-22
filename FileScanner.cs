@@ -70,6 +70,15 @@
             List<(string fileName, string category, string destination)> deletedFiles = new();
             List<string> allFiles = GetFiles();
 
+            //checks if the source is the dowloads folder before deleting .exe
+            //if not logs in the dataGridViewer1 with messages saying they were skipped
+            string safePath = SourceDirectory.ToLower();
+            if (!safePath.Contains("downloads"))
+            {
+                deletedFiles.Add(("EXE Deletion skipped", "Installers", "Unsafe Directory"));
+                return deletedFiles;
+            }
+
             foreach( var file in allFiles)
             {
                 string ext = Path.GetExtension(file).ToLower();

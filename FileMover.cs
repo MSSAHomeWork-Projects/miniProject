@@ -71,8 +71,7 @@ namespace MiniProject
                 "Videos" => Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
                 "Documents" => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 "Archives" => ZipExtractToDirectory,
-                "_" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
-                _ => throw new NotImplementedException()
+                _ => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
             };
         }
     }
