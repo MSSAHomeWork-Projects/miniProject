@@ -51,10 +51,10 @@ namespace MiniProject
             var deletedFiles = scanner.DeleteOldInstallers();
             foreach (var deleted in deletedFiles)
             {
-                int row = dataGridView1.Rows.Add(deleted.fileName, deleted.category, deleted.destination);
+                int row = dataGridView1.Rows.Add(Path.GetFileName(deleted), "Installers", "Deleted");
                 dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
             }
-            scanner.FilterByType();
+            scanner.FilterByType(deletedFiles);
 
             int totalFiles = scanner.FileGroups.Sum(group => group.Value.Count);
             int processedFiles = 0;
@@ -85,6 +85,11 @@ namespace MiniProject
 
                 foreach (string file in category.Value)
                 {
+                    if (category.Key == "Installers" && !file.ToLower().Contains("downloads"))
+                    {
+                        dataGridView1.Rows.Add(Path.GetFileName(file), "Installers", "Skipped (Not from Downloads)");
+                        continue;
+                    }
                     string fileName = Path.GetFileName(file);
                     string destinationRoot = (category.Key == "Archives" && !chkExtractZips.Checked)
                         ? selectedFolderPath : mover.GetCategoryDestination(category.Key);

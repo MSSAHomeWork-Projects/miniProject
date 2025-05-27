@@ -46,13 +46,22 @@
         }
 
         //Filters and places in the FileGroups Dictionary
-        public void FilterByType()
+        public void FilterByType(List<string>? skipPaths = null)
         {
             FileGroups.Clear();
             List<string> allFiles = GetFiles();
 
+            HashSet<string> normalizedSkips = skipPaths != null
+                ? new HashSet<string>(skipPaths.Select(p => Path.GetFullPath(p).ToLower()))
+                : new HashSet<string>();
+
             foreach (var file in allFiles)
             {
+                string normalized = Path.GetFullPath(file).ToLower();
+                if (normalizedSkips.Contains(normalized))
+                {
+                    continue;
+                }
                 string ext = Path.GetExtension(file).ToLower();
                 if (FileExtension.TryGetValue(ext, out string category))
                 {
@@ -65,9 +74,9 @@
         }
 
         //filters through installer files for Apps and deletes any older 30 days
-        public List<(string fileName, string category, string destination)> DeleteOldInstallers(int numDays = 30)
+        public List<string> DeleteOldInstallers(int numDays = 30)
         {
-            List<(string fileName, string category, string destination)> deletedFiles = new();
+            List<string> deletedFiles = new();
             List<string> allFiles = GetFiles();
 
             //checks if the source is the dowloads folder before deleting .exe
@@ -75,7 +84,6 @@
             string safePath = SourceDirectory.ToLower();
             if (!safePath.Contains("downloads"))
             {
-                deletedFiles.Add(("EXE Deletion skipped", "Installers", "Unsafe Directory"));
                 return deletedFiles;
             }
 
@@ -90,11 +98,11 @@
                         try
                         {
                             File.Delete(file);
-                            deletedFiles.Add((Path.GetFileName(file), "Installers", "Deleted"));
+                            deletedFiles.Add(file);
                         }
                         catch (Exception ex)
                         {
-                            deletedFiles.Add((Path.GetFileName(file),"Installers", $"Deleted failed: {ex.Message}"));
+                            Console.WriteLine($"Failed to delte {file}: {ex.Message}");
                         }
                     }
                 }
