@@ -11,7 +11,7 @@ namespace MiniProject
         {
             InitializeComponent();
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             if (dataGridView1.Columns.Count == 0)
@@ -135,7 +135,7 @@ namespace MiniProject
             //Folder protection Doesn't allow entry into windows, program files and only looks through certain extensions for duplicates
             string[] allowedExtensions =
             {
-                ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff",
+                ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp",
                 ".mp4", ".mov", ".avi", ".mkv",
                 ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
                 ".pdf", ".txt", ".csv", ".rtf"
@@ -195,6 +195,14 @@ namespace MiniProject
 
                     }
                 }
+            }
+            if (duplicatesDeleted == 0)
+            {
+                MessageBox.Show("No duplicates Found.");
+            }
+            else
+            {
+                MessageBox.Show($"{duplicatesDeleted} duplicates deleted");
             }
         }
     }
