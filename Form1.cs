@@ -45,67 +45,136 @@ namespace MiniProject
                 MessageBox.Show("No folder selected. Select a folder to sort.");
                 return;
             }
-            FileScanner scanner = new FileScanner(selectedFolderPath);
-            dataGridView1.Rows.Clear();
-            //zip files population on dataGridViewer1
-            var deletedFiles = scanner.DeleteOldInstallers();
-            foreach (var deleted in deletedFiles)
+            
+            try
             {
-                int row = dataGridView1.Rows.Add(Path.GetFileName(deleted), "Installers", "Deleted");
-                dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
-            }
-            scanner.FilterByType(deletedFiles);
-
-            int totalFiles = scanner.FileGroups.Sum(group => group.Value.Count);
-            int processedFiles = 0;
-
-            FileMover mover = new FileMover();
-            //
-            foreach (var category in scanner.FileGroups)
-            {
-                string destination = mover.GetCategoryDestination(category.Key);
-                if (category.Key == "Archives")
+                FileScanner scanner = new FileScanner(selectedFolderPath);
+                dataGridView1.Rows.Clear();
+                
+                //zip files population on dataGridViewer1
+                var deletedFiles = scanner.DeleteOldInstallers();
+                foreach (var deleted in deletedFiles)
                 {
-                    if (chkExtractZips.Checked)
-                    {
-                        foreach (string zipPath in category.Value)
-                        {
-                            string zipFileName = Path.GetFileName(zipPath);
-                            string? extractedPath = mover.ExtractZipFiles(zipPath);
+                    int row = dataGridView1.Rows.Add(Path.GetFileName(deleted), "Installers", "Deleted");
+                    dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
+                }
+                scanner.FilterByType(deletedFiles);
 
-                            if (extractedPath != null)
+                int totalFiles = scanner.FileGroups.Sum(group => group.Value.Count);
+                int processedFiles = 0;
+
+                // Prevent division by zero
+                if (totalFiles == 0)
+                {
+                    MessageBox.Show("No files to sort in the selected folder.");
+                    return;
+                }
+
+                FileMover mover = new FileMover();
+                //
+                foreach (var category in scanner.FileGroups)
+                {
+                    string destination = mover.GetCategoryDestination(category.Key);
+                    if (category.Key == "Archives")
+                    {
+                        if (chkExtractZips.Checked)
+                        {
+                            foreach (string zipPath in category.Value)
                             {
-                                int row = dataGridView1.Rows.Add(zipFileName, "Zip File", $"Extracted to {extractedPath}");
-                                dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.OrangeRed;
+                                try
+                                {
+                                    string zipFileName = Path.GetFileName(zipPath);
+                                    string? extractedPath = mover.ExtractZipFiles(zipPath);
+
+                                    if (extractedPath != null)
+                                    {
+                                        int row = dataGridView1.Rows.Add(zipFileName, "Zip File", $"Extracted to {extractedPath}");
+                                        dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.OrangeRed;
+                                    }
+                                    else
+                                    {
+                                        int row = dataGridView1.Rows.Add(zipFileName, "Zip File", "Extraction failed");
+                                        dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    int row = dataGridView1.Rows.Add(Path.GetFileName(zipPath), "Zip File", $"Error: {ex.Message}");
+                                    dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
+                                }
                             }
                         }
-                    }
-                    continue;
-                }
-
-                foreach (string file in category.Value)
-                {
-                    if (category.Key == "Installers" && !file.ToLower().Contains("downloads"))
-                    {
-                        dataGridView1.Rows.Add(Path.GetFileName(file), "Installers", "Skipped (Not from Downloads)");
                         continue;
                     }
-                    string fileName = Path.GetFileName(file);
-                    string destinationRoot = (category.Key == "Archives" && !chkExtractZips.Checked)
-                        ? selectedFolderPath : mover.GetCategoryDestination(category.Key);
-                    string destPath = Path.Combine(destinationRoot, fileName);
-                    mover.MoveFile(file, destPath);
-                    string destinationFolder = Path.GetDirectoryName(destPath);
-                    dataGridView1.Rows.Add(fileName, category.Key, destinationFolder);
 
-                    processedFiles++;
-                    progressBar1.Value = (int)((processedFiles / (double)totalFiles) * 100);
-                    progressBar1.Refresh();
+                    foreach (string file in category.Value)
+                    {
+                        try
+                        {
+                            string fileName = Path.GetFileName(file);
+                            
+                            //Special handling for installers
+                            if (category.Key == "Installers")
+                            {
+                                // If installer is not from downloads folder, skip it
+                                if (!file.ToLower().Contains("downloads"))
+                                {
+                                    dataGridView1.Rows.Add(fileName, "Installers", "Skipped (Not from Downloads folder)");
+                                    processedFiles++;
+                                    continue;
+                                }
+                                // If installer is from downloads folder, it should stay there (newer ones)
+                                // Older ones were already deleted by DeleteOldInstallers
+                                else
+                                {
+                                    dataGridView1.Rows.Add(fileName, "Installers", "Kept in Downloads (Recent installer)");
+                                    processedFiles++;
+                                    continue;
+                                }
+                            }
+                            
+                            string destinationRoot;
+
+                            if (category.Key == "Archives" && !chkExtractZips.Checked)
+                            {
+                                destinationRoot = selectedFolderPath;
+                            }
+                            else
+                            {
+                                destinationRoot = mover.GetCategoryDestination(category.Key);
+                            }
+                            string destPath = Path.Combine(destinationRoot, fileName);
+                            
+                            //calling Movefile from FileMover Class
+                            mover.MoveFile(file, destPath);
+
+                            string destinationFolder = Path.GetDirectoryName(destPath);
+                            dataGridView1.Rows.Add(fileName, category.Key, destinationFolder);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Add error row instead of crashing
+                            int row = dataGridView1.Rows.Add(Path.GetFileName(file), category.Key, $"Error: {ex.Message}");
+                            dataGridView1.Rows[row].DefaultCellStyle.ForeColor = Color.Red;
+                        }
+                        finally
+                        {
+                            processedFiles++;
+                            // Update progress bar safely
+                            int progressValue = Math.Min(100, (int)((processedFiles / (double)totalFiles) * 100));
+                            progressBar1.Value = progressValue;
+                            progressBar1.Refresh();
+                        }
+                    }
                 }
+                progressBar1.Value = 100;
+                progressBar1.Refresh();
+                MessageBox.Show($"Files sorted successfully. Processed {processedFiles} files.");
             }
-            progressBar1.Value = 100;
-            progressBar1.Refresh();
-            MessageBox.Show("Files sorted.");
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while sorting files: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ChkExtractZips_CheckedChanged(object sender, EventArgs e)
@@ -140,10 +209,17 @@ namespace MiniProject
             //Folder protection Doesn't allow entry into windows, program files and only looks through certain extensions for duplicates
             string[] allowedExtensions =
             {
-                ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp",
-                ".mp4", ".mov", ".avi", ".mkv",
+                // Images
+                ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp", ".svg", ".ico",
+                // Videos
+                ".mp4", ".mov", ".avi", ".mkv", ".wmv", ".flv", ".webm", ".m4v", ".3gp",
+                // Audio
+                ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a",
+                // Documents
                 ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
-                ".pdf", ".txt", ".csv", ".rtf"
+                ".pdf", ".txt", ".csv", ".rtf", ".odt", ".ods", ".odp",
+                // Archives (for duplicate detection)
+                ".zip", ".rar", ".7z"
             };
 
             Dictionary<string, List<string>> hashToFiles = new Dictionary<string, List<string>>();

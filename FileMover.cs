@@ -58,7 +58,7 @@ namespace MiniProject
             }
             if (!File.Exists(destinationPath))
             {
-                File.Move(sourcePath, destinationPath, true);
+                File.Move(sourcePath, destinationPath);
             }
         }
 
@@ -71,6 +71,12 @@ namespace MiniProject
                 "Videos" => Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
                 "Documents" => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 "Archives" => ZipExtractToDirectory,
+                "Code" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Code"),
+                "Fonts" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts"),
+                "System" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SystemFiles"),
+                "Downloads" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
+                "Installers" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Installers"),
+                "Miscellaneous" => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Miscellaneous"),
                 _ => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
             };
         }
