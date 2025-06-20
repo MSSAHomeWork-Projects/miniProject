@@ -14,6 +14,9 @@ namespace MiniProject
         
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Show welcome/how-to-use dialog
+            ShowWelcomeDialog();
+
             if (dataGridView1.Columns.Count == 0)
             {
                 dataGridView1.Columns.Add("FileName", "File Name");
@@ -285,6 +288,83 @@ namespace MiniProject
             {
                 MessageBox.Show($"{duplicatesDeleted} duplicates deleted");
             }
+        }
+
+        private void ShowWelcomeDialog()
+        {
+            // Create a custom dialog form for better readability
+            Form welcomeForm = new Form()
+            {
+                Text = "How to Use File Organizer",
+                Size = new Size(600, 700),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                ShowInTaskbar = false
+            };
+
+            // Create a RichTextBox for better text formatting
+            RichTextBox textBox = new RichTextBox()
+            {
+                Location = new Point(20, 20),
+                Size = new Size(540, 580),
+                ReadOnly = true,
+                BorderStyle = BorderStyle.None,
+                BackColor = welcomeForm.BackColor,
+                Font = new Font("Segoe UI", 10F),
+                ScrollBars = RichTextBoxScrollBars.Vertical
+            };
+
+            string welcomeMessage = "Welcome to File Organizer!\n\n" +
+                                   "Here's how this application works:\n\n" +
+                                   "📁 FILE SORTING:\n" +
+                                   "Files will be automatically sorted into folders based on their type:\n" +
+                                   "   • Images → Images folder\n" +
+                                   "   • Videos → Videos folder\n" +
+                                   "   • Music → Music folder\n" +
+                                   "   • Documents → Documents folder\n" +
+                                   "   • Archives → Archives folder\n" +
+                                   "   • Code → Code folder\n" +
+                                   "   • Fonts → Fonts folder\n" +
+                                   "   • And other categories...\n\n" +
+                                   "📦 UNZIP FILES:\n" +
+                                   "When you check 'Unzip Files':\n" +
+                                   "   • Zip files will be extracted\n" +
+                                   "   • The unzipped folder will be placed in Downloads\n" +
+                                   "   • The original zip file will be deleted\n\n" +
+                                   "🗑️ INSTALLER CLEANUP:\n" +
+                                   "Installer files (.exe, .msi) older than 30 days will be automatically deleted.\n" +
+                                   "⚠️ This only applies to files in the Downloads folder for safety.\n\n" +
+                                   "🔄 DUPLICATE REMOVAL:\n" +
+                                   "Duplicates can only be deleted from:\n" +
+                                   "   • Images folders\n" +
+                                   "   • Videos folders\n" +
+                                   "   • Music folders\n" +
+                                   "   • Documents folders\n" +
+                                   "This ensures system files remain safe.\n\n" +
+                                   "Click OK to continue!";
+
+            textBox.Text = welcomeMessage;
+
+            // Create OK button
+            Button okButton = new Button()
+            {
+                Text = "OK",
+                Size = new Size(100, 35),
+                Location = new Point(250, 620),
+                DialogResult = DialogResult.OK,
+                Font = new Font("Segoe UI", 9F)
+            };
+
+            // Add controls to form
+            welcomeForm.Controls.Add(textBox);
+            welcomeForm.Controls.Add(okButton);
+            welcomeForm.AcceptButton = okButton;
+
+            // Show the dialog
+            welcomeForm.ShowDialog(this);
+            welcomeForm.Dispose();
         }
     }
 }
